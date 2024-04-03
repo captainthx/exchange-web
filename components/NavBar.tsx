@@ -12,9 +12,11 @@ import {
   Button,
 } from "@nextui-org/react";
 import { AcmeLogo } from "@/components/AcmeLogo";
-function NavBar() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+import { usePathname } from "next/navigation";
 
+export default function NavBar() {
+  const pathName = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const menuItems = [
     "Profile",
     "Dashboard",
@@ -26,6 +28,17 @@ function NavBar() {
     "Team Settings",
     "Help & Feedback",
     "Log Out",
+  ];
+
+  const mainMenu = [
+    {
+      name: "market",
+      path: "/market",
+    },
+    {
+      name: "buy crypto",
+      path: "/market/buyCrypto",
+    },
   ];
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen}>
@@ -39,23 +52,20 @@ function NavBar() {
           <p className="font-bold text-inherit">ACME</p>
         </NavbarBrand>
       </NavbarContent>
-
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            Customers
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
-        </NavbarItem>
+      <NavbarContent>
+        {mainMenu.map((item, index) => (
+          <NavbarItem
+            key={`${item}-${index}`}
+            isActive={pathName === item.path}
+          >
+            <Link
+              color={pathName === item.path ? "foreground" : "primary"}
+              href={item.path}
+            >
+              {item.name}
+            </Link>
+          </NavbarItem>
+        ))}
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
@@ -67,7 +77,7 @@ function NavBar() {
           </Button>
         </NavbarItem>
       </NavbarContent>
-      <NavbarMenu>
+      {/* <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
@@ -86,9 +96,7 @@ function NavBar() {
             </Link>
           </NavbarMenuItem>
         ))}
-      </NavbarMenu>
+      </NavbarMenu> */}
     </Navbar>
   );
 }
-
-export default NavBar;
