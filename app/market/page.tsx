@@ -16,10 +16,11 @@ import {
   User,
   Pagination,
 } from "@nextui-org/react";
-import { DeleteIcon, EditIcon, EyeIcon } from "@/app/icon";
 import client from "@/service/request";
 import axios from "axios";
 import { PriceFeed } from "@/types";
+import { AiFillEye } from "react-icons/ai";
+import { AiOutlineEdit } from "react-icons/ai";
 
 const columns = [
   {
@@ -46,26 +47,22 @@ export default function Market() {
   const rowPerPage = 10;
   const pages = Math.ceil(data.length / rowPerPage);
 
-  console.log({ pages, data });
-
   const items = React.useMemo(() => {
     const start = (page - 1) * rowPerPage;
     const end = start + rowPerPage;
 
     return data.slice(start, end);
   }, [page, data]);
-  const fetchPrice = async () => {
-    const res = await axios.get("https://api.gemini.com/v1/pricefeed");
-    if (res.status === 200) {
-      console.log("data ", res.data);
-      setData(res.data);
-    }
-  };
 
   useEffect(() => {
-    setInterval(() => {
-      fetchPrice();
-    }, 2000);
+    const baseUrl = process.env.NEXT_PUBLIC_URL_PRICE;
+    const fetchPrice = async () => {
+      const res = await axios.get(baseUrl + "/pricefeed");
+      if (res.status === 200) {
+        setData(res.data);
+      }
+    };
+    fetchPrice();
   }, []);
 
   const renderCell = React.useCallback(
@@ -77,17 +74,12 @@ export default function Market() {
             <div className="relative flex items-center gap-2">
               <Tooltip content="Details">
                 <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EyeIcon />
+                  <AiFillEye />
                 </span>
               </Tooltip>
               <Tooltip content="Edit user">
                 <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <EditIcon />
-                </span>
-              </Tooltip>
-              <Tooltip color="danger" content="Delete user">
-                <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                  <DeleteIcon />
+                  <AiOutlineEdit />
                 </span>
               </Tooltip>
             </div>
