@@ -19,8 +19,8 @@ import {
 import client from "@/service/request";
 import axios from "axios";
 import { PriceFeed } from "@/types";
-import { AiFillEye } from "react-icons/ai";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineBarChart } from "react-icons/ai";
+import Link from "next/link";
 
 const columns = [
   {
@@ -72,20 +72,15 @@ export default function Market() {
         case "action":
           return (
             <div className="relative flex items-center gap-2">
-              <Tooltip content="Details">
+              <Tooltip content="Chart">
                 <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <AiFillEye />
-                </span>
-              </Tooltip>
-              <Tooltip content="Edit user">
-                <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                  <AiOutlineEdit />
+                  <Link href={"/chart/" + row.pair}>
+                    <AiOutlineBarChart />
+                  </Link>
                 </span>
               </Tooltip>
             </div>
           );
-        case "percentChange24h": {
-        }
         default:
           return cellValue;
       }

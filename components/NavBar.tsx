@@ -8,12 +8,11 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
-  Link,
   Button,
 } from "@nextui-org/react";
 import { AcmeLogo } from "@/components/AcmeLogo";
 import { usePathname } from "next/navigation";
-
+import Link from "next/link";
 export default function NavBar() {
   const pathName = usePathname();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
