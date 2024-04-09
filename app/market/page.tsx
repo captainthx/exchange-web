@@ -10,13 +10,9 @@ import {
   TableRow,
   TableCell,
   Divider,
-  getKeyValue,
-  Chip,
   Tooltip,
-  User,
   Pagination,
 } from "@nextui-org/react";
-import client from "@/service/request";
 import axios from "axios";
 import { PriceFeed } from "@/types";
 import { AiOutlineBarChart } from "react-icons/ai";
