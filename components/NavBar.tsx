@@ -13,21 +13,13 @@ import {
 import { AcmeLogo } from "@/components/AcmeLogo";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
+import { TbLogout } from "react-icons/tb";
+
 export default function NavBar() {
+  const { data: session, status } = useSession();
   const pathName = usePathname();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
 
   const mainMenu = [
     {
@@ -48,7 +40,7 @@ export default function NavBar() {
         />
         <NavbarBrand>
           <AcmeLogo />
-          <p className="font-bold text-inherit">ACME</p>
+          <p className="font-bold text-inherit">HOME</p>
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent>
@@ -67,33 +59,23 @@ export default function NavBar() {
         ))}
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="/login">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href="/signup">SignUp</Link>
-        </NavbarItem>
+        {status === "authenticated" ? (
+          <NavbarItem className="hidden lg:flex">
+            <TbLogout onClick={() => signOut()} />
+          </NavbarItem>
+        ) : (
+          <NavbarItem className="hidden lg:flex">
+            <Link href="/login">Login</Link>
+          </NavbarItem>
+        )}
+        {status === "authenticated" ? (
+          <NavbarItem>
+            <Link href="/profile">Profile</Link>
+          </NavbarItem>
+        ) : (
+          ""
+        )}
       </NavbarContent>
-      {/* <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              color={
-                index === 2
-                  ? "primary"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              className="w-full"
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu> */}
     </Navbar>
   );
 }

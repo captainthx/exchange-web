@@ -3,10 +3,13 @@ import React, { FormEvent, useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Button, Card, Input } from "@nextui-org/react";
 import toast from "react-hot-toast";
+import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/navigation";
+
 export default function LogIn() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { data: session, status } = useSession();
-
+  const router = useRouter();
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -31,7 +34,6 @@ export default function LogIn() {
         password: target.password.value,
       });
       if (res) {
-        console.log("response ", res);
         if (res.status === 200) {
           toast.success("Login sucess");
         }
@@ -45,14 +47,7 @@ export default function LogIn() {
       toast.remove();
     }
   };
-  if (status == "authenticated") {
-    return (
-      <>
-        <p> Signed in as {session.user?.username}</p>
-        <Button onClick={() => signOut()}>signOut</Button>
-      </>
-    );
-  }
+
   return (
     <>
       <div className="h-screen flex items-center justify-center">
@@ -61,8 +56,22 @@ export default function LogIn() {
             <h2 className="text-center">login</h2>
             <Input label="username" id="username"></Input>
             <Input label="password" id="password"></Input>
-            <Button type="submit" isLoading={isLoading}>
+            <Button type="submit" color="primary" isLoading={isLoading}>
               {isLoading ? "Loading..." : "Login"}
+            </Button>
+            <p className="text-center">or</p>
+            <Button
+              onClick={() =>
+                signIn("google", {
+                  redirect: true,
+                  callbackUrl: "/profile",
+                })
+              }
+              color="warning"
+              variant="light"
+            >
+              <FcGoogle />
+              google
             </Button>
           </Card>
         </form>

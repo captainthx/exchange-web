@@ -85,7 +85,7 @@ export default function Market() {
   );
   return (
     <>
-      <div className="flex flex-col ">
+      <div className="flex flex-col">
         <div className="grid grid-cols-4 gap-4 p-2 mt-2">
           <div>
             <Card>
