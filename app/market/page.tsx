@@ -12,6 +12,7 @@ import {
   Divider,
   Tooltip,
   Pagination,
+  Spinner,
 } from "@nextui-org/react";
 import axios from "axios";
 import { PriceFeed } from "@/types";
@@ -38,6 +39,7 @@ const columns = [
 ];
 
 export default function Market() {
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<PriceFeed[]>([]);
   const [page, setPage] = useState<number>(1);
   const rowPerPage = 10;
@@ -56,6 +58,7 @@ export default function Market() {
       const res = await axios.get(baseUrl + "/pricefeed");
       if (res.status === 200) {
         setData(res.data);
+        setIsLoading(false);
       }
     };
     fetchPrice();
@@ -120,6 +123,9 @@ export default function Market() {
       <Divider className="my-4" />
       <div className="text-center ">
         <Table
+          classNames={{
+            table: "min-h-[400px]",
+          }}
           bottomContent={
             <div className="flex w-full justify-center">
               <Pagination
@@ -139,7 +145,11 @@ export default function Market() {
               <TableColumn key={column.key}>{column.label}</TableColumn>
             )}
           </TableHeader>
-          <TableBody items={items}>
+          <TableBody
+            items={items}
+            isLoading={isLoading}
+            loadingContent={<Spinner label="Loading..." />}
+          >
             {(item) => (
               <TableRow key={item.pair}>
                 {(columnKey) => (

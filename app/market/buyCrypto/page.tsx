@@ -4,6 +4,20 @@ import axios from "axios";
 import { useState } from "react";
 
 export default function BuyCrypto() {
+  const rate = [
+    {
+      name: "btc",
+      rate: 57000,
+    },
+    {
+      name: "usd",
+      rate: 36,
+    },
+    {
+      name: "eth",
+      rate: 2900,
+    },
+  ];
   const currencySpend = [
     {
       label: "USD",
@@ -36,22 +50,34 @@ export default function BuyCrypto() {
   const [selectedSpend, setSelectedSpend] = useState<string>(
     currencySpend[0].value
   );
-  const [selsectedReceive, setSelectedReceive] = useState<string>(
+  const [selectedReceive, setSelectedReceive] = useState<string>(
     currencyReceive[1].value
   );
   const [spendVal, setSpendVal] = useState<number>(0);
   const [receiveVal, setReceiveVal] = useState<number>(0);
 
-  const handleConvertBuy = () => {
-    // convert function
+  const convert = (symbol: string, amount: number) => {
+    const price: number = rate.find((e) => e.name === symbol.toLowerCase())
+      ?.rate as number;
+    let receive: number = 0;
+    if (selected === "buy") {
+      receive = amount / price;
+      setReceiveVal(receive);
+    } else {
+      receive = amount * price;
+      setReceiveVal(receive);
+    }
   };
   const changeSpendVal = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setSpendVal(Number(value));
-  };
-  const changeReceiveVal = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setReceiveVal(Number(value));
+    if (spendVal && selectedReceive) {
+      if (selected === "buy") {
+        convert(selectedReceive, spendVal);
+      } else {
+        convert(selectedSpend, spendVal);
+      }
+    }
   };
 
   const changeSelectSpend = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -97,11 +123,19 @@ export default function BuyCrypto() {
                             value={selectedSpend}
                             onChange={changeSelectSpend}
                           >
-                            {currencySpend.map((cur) => (
-                              <option key={cur.value} value={cur.value}>
-                                {cur.label}
-                              </option>
-                            ))}
+                            {selected === "buy"
+                              ? currencySpend
+                                  .filter((cur) => cur.value === "USD")
+                                  .map((cur) => (
+                                    <option key={cur.value} value={cur.value}>
+                                      {cur.label}
+                                    </option>
+                                  ))
+                              : currencySpend.map((cur) => (
+                                  <option key={cur.value} value={cur.value}>
+                                    {cur.label}
+                                  </option>
+                                ))}
                           </select>
                         </div>
                       }
@@ -112,7 +146,6 @@ export default function BuyCrypto() {
                       type="number"
                       label="receive"
                       value={receiveVal.toString()}
-                      onChange={changeReceiveVal}
                       endContent={
                         <div className="flex items-center">
                           <label className="sr-only" htmlFor="currency">
@@ -122,7 +155,7 @@ export default function BuyCrypto() {
                             className="outline-none border-0 bg-transparent text-default-400 text-small"
                             id="currency"
                             name="currency"
-                            value={selsectedReceive}
+                            value={selectedReceive}
                             onChange={changeSelectReceive}
                           >
                             {currencyReceive.map((cur) => (
@@ -151,6 +184,8 @@ export default function BuyCrypto() {
                       variant="bordered"
                       type="number"
                       label="spend"
+                      value={spendVal.toString()}
+                      onChange={changeSpendVal}
                       endContent={
                         <div className="flex items-center">
                           <label className="sr-only" htmlFor="currency">
@@ -163,11 +198,13 @@ export default function BuyCrypto() {
                             value={selectedSpend}
                             onChange={changeSelectSpend}
                           >
-                            {currencySpend.map((cur) => (
-                              <option key={cur.value} value={cur.value}>
-                                {cur.label}
-                              </option>
-                            ))}
+                            {currencySpend
+                              .filter((item) => item.value != "USD")
+                              .map((cur) => (
+                                <option key={cur.value} value={cur.value}>
+                                  {cur.label}
+                                </option>
+                              ))}
                           </select>
                         </div>
                       }
@@ -177,6 +214,7 @@ export default function BuyCrypto() {
                       variant="bordered"
                       type="number"
                       label="receive"
+                      value={receiveVal.toString()}
                       endContent={
                         <div className="flex items-center">
                           <label className="sr-only" htmlFor="currency">
@@ -186,14 +224,16 @@ export default function BuyCrypto() {
                             className="outline-none border-0 bg-transparent text-default-400 text-small"
                             id="currency"
                             name="currency"
-                            value={selsectedReceive}
+                            value={selectedReceive}
                             onChange={changeSelectReceive}
                           >
-                            {currencyReceive.map((cur) => (
-                              <option key={cur.value} value={cur.value}>
-                                {cur.label}
-                              </option>
-                            ))}
+                            {currencyReceive
+                              .filter((item) => item.value === "USD")
+                              .map((cur) => (
+                                <option key={cur.value} value={cur.value}>
+                                  {cur.label}
+                                </option>
+                              ))}
                           </select>
                         </div>
                       }
